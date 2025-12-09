@@ -3,11 +3,11 @@ const app = express();
 app.get("/", (req, res) => {
   res.send("Home page");
 });
-app.get("/about", (req, res) => {
-  res.send("About page");
+app.post("/form", (req, res) => {
+  res.send("Data saved successfully");
 });
-app.get("/products", (req, res) => {
-  res.send("Products page");
+app.delete("/data", (req, res) => {
+  res.send("Data deleted successfully");
 });
 app.listen(7777, () => {
   console.log("Server started running on port 7777");
