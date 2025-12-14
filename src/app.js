@@ -2,6 +2,7 @@ const express = require("express");
 const connectDB = require("./config/database.js");
 const app = express();
 const User = require("./models/user.js");
+const { ReturnDocument } = require("mongodb");
 app.use(express.json());
 app.post("/signup", async (req, res) => {
   // console.log(req.body);
@@ -37,6 +38,28 @@ app.get("/feed", async (req, res) => {
   try {
     const users = await User.find({});
     res.send(users);
+  } catch (err) {
+    res.status(400).send("Something went wrong");
+  }
+});
+app.delete("/user", async (req, res) => {
+  const userId = req.body.userId;
+  try {
+    const user = await User.findByIdAndDelete(userId);
+    res.send("User deleted successfully");
+  } catch (err) {
+    res.status(400).send("Something went wrong");
+  }
+});
+app.patch("/user", async (req, res) => {
+  const userId = req.body.userId;
+  const data = req.body;
+  try {
+    await User.findByIdAndUpdate({ _id: userId }, data, {
+      ReturnDocument: "after",
+    });
+    console.log(user);
+    res.send("User updated successfully");
   } catch (err) {
     res.status(400).send("Something went wrong");
   }
