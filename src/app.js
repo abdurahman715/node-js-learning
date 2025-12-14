@@ -1,20 +1,30 @@
 const express = require("express");
+const connectDB = require("./config/database.js");
 const app = express();
-app.use(
-  "/user",
-  (req, res, next) => {
-    console.log("Route one");
-    next();
-  },
-  (req, res, next) => {
-    console.log("Route two");
-    next();
-  },
-  (req, res, next) => {
-    console.log("Route 3");
-    res.send("3rd response");
+const User = require("./models/user.js");
+app.post("/signup", async (req, res) => {
+  const user = new User({
+    firstName: "Muhammed",
+    lastName: "Abdurahman ck",
+    email: "abdurahmanck715@gmail.com",
+    password: 12345,
+    gender: "Male",
+  });
+  try {
+    await user.save();
+    res.send("User added successfully");
+  } catch (err) {
+    res.status(400).send("Error saving the user:" + err.message);
   }
-);
-app.listen(7777, () => {
-  console.log("Server started running on port 7777");
 });
+
+connectDB()
+  .then(() => {
+    console.log("Database connection established");
+    app.listen(7777, () => {
+      console.log("Server started running on port 7777");
+    });
+  })
+  .catch((err) => {
+    console.err("Database cannot be connected");
+  });
