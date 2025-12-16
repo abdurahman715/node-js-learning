@@ -4,6 +4,8 @@ const app = express();
 const User = require("./models/user.js");
 const { validateSignUpData } = require("./utils/validation.js");
 const bcrypt = require("bcrypt");
+const validator = require("validator");
+
 app.use(express.json());
 app.post("/signup", async (req, res) => {
   try {
@@ -20,6 +22,26 @@ app.post("/signup", async (req, res) => {
     });
     await user.save();
     res.send("User added successfully");
+  } catch (err) {
+    res.status(400).send("Error saving the user:" + err.message);
+  }
+});
+app.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!validator.isEmail(email)) {
+      throw new Error("Invalid credentials");
+    }
+    const user = await User.findOne({ email: email });
+    if (!user) {
+      throw new Error("Invalid credentials");
+    }
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (isPasswordValid) {
+      res.send("Login successful");
+    } else {
+      throw new Error("Invalid credentials");
+    }
   } catch (err) {
     res.status(400).send("Error saving the user:" + err.message);
   }
