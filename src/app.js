@@ -2,19 +2,22 @@ const express = require("express");
 const connectDB = require("./config/database.js");
 const app = express();
 const User = require("./models/user.js");
-const { ReturnDocument } = require("mongodb");
+const { validateSignUpData } = require("./utils/validation.js");
+const bcrypt = require("bcrypt");
 app.use(express.json());
 app.post("/signup", async (req, res) => {
-  // console.log(req.body);
-  // const user = new User({
-  //   firstName: "Muhammed",
-  //   lastName: "Abdurahman ck",
-  //   email: "abdurahmanck715@gmail.com",
-  //   password: 12345,
-  //   gender: "Male",
-  // });
-  const user = new User(req.body);
   try {
+    validateSignUpData(req);
+    const { firstName, lastName, email, password } = req.body;
+    const passwordHash = await bcrypt.hash(password, 10);
+    console.log(passwordHash);
+
+    const user = new User({
+      firstName,
+      lastName,
+      email,
+      password: passwordHash,
+    });
     await user.save();
     res.send("User added successfully");
   } catch (err) {
