@@ -10,6 +10,23 @@ const validateSignUpData = (req) => {
     throw new Error("Please enter a strog password");
   }
 };
+const validateEditProfileData = (req) => {
+  const allowedEditFields = [
+    "firstName",
+    "lastName",
+    "email",
+    "photUrl",
+    "gender",
+    "age",
+    "about",
+    "skills",
+  ];
+  const isEditAllowed = Object.keys(req.body).every((field) =>
+    allowedEditFields.includes(field)
+  );
+  return isEditAllowed;
+};
 module.exports = {
   validateSignUpData,
+  validateEditProfileData,
 };
