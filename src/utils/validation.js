@@ -26,6 +26,7 @@ const validateEditProfileData = (req) => {
   );
   return isEditAllowed;
 };
+const validPassword = (req) => {};
 module.exports = {
   validateSignUpData,
   validateEditProfileData,
